@@ -1,1 +1,1 @@
-this needs to be ignored -gitignre
+this needs to be ignored -g
