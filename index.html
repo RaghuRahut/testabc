@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Quick Text</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,900" rel="stylesheet">
+  <link rel='stylesheet' href='https://codepen.io/kallil-belmonte/pen/QWveXpd.css'>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 300px;
+      height: 40px;
+      margin: 3px auto;
+      border: 2px solid #EFEFEF;
+      padding: 0 2px;
+      border-radius: 4px;
+      overflow: auto;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    button {
+      padding: 0;
+      background-color: transparent;
+      border: none;
+      cursor: pointer
+    }
+
+    button:active {
+      background-color: yellow;
+    }
+
+    button:focus {
+      outline: none;
+    }
+
+    button img {
+      width: 25px;
+    }
+
+    textarea {
+      width: 20vw;
+      height: 2vw;
+    }
+
+    section {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    #output {
+      height: 100px;
+    }
+
+    .section2 {
+      margin-top: 30px;
+      align-items: center;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- partial:index.partial.html -->
+  <div class="container">
+    <section>
+      <!-- Dynamic boxes will be inserted here -->
+    </section>
+  </div>
+  <div class="section2">
+    <p>Test Here</p>
+    <textarea id='output' rows=60 cols=90></textarea>
+    <input type="button" value="Clear" id="clear">
+
+  </div>
+  <!-- partial -->
+  <script>
+    // JSON object containing texts
+    // "text":  `` this support multiline
+    // "text":  "sample text" this support single line
+    const texts = {
+      "text": `Green#2024`,
+      "text1": `pulirajesh@agi-glaspac.com`,
+      "text2": `admin@123`,
+      "text3": `srinu@hindware.com`,
+      "text4": `aGreen#2024`,
+      "text5": `aapulirajesh@agi-glaspac.com`,
+      "text6": `aaaadmin@123`,
+      "text7": `function bindTextToElements() {
+    for (const className in texts) {
+      const element = document.querySelector('.' + className);
+      if (element) {
+        element.textContent = texts[className];
+      }
+    }
+  }`
+    };
+
+    function bindTextToElements() {
+      for (const className in texts) {
+        const element = document.querySelector('.' + className);
+        if (element) {
+          element.textContent = texts[className];
+        }
+      }
+    }
+
+    function onLoadPage() {
+      generateBoxes();
+      bindTextToElements(); // Ensure texts are bound to elements
+    }
+
+    function generateBoxes() {
+      const container = document.querySelector('section');
+
+      for (const className in texts) {
+        const div = document.createElement('div');
+        div.classList.add('box');
+
+        const p = document.createElement('p');
+        p.classList.add(className);
+        p.textContent = texts[className];
+
+        const button = document.createElement('button');
+        button.classList.add('button');
+        button.setAttribute('type', 'button');
+        button.innerHTML = '<img src="https://s2.svgbox.net/octicons.svg?ic=copy" alt="Icon">';
+
+        div.appendChild(p);
+        div.appendChild(button);
+        container.appendChild(div);
+      }
+
+      // After generating boxes, bind event listeners
+      bindEventListeners();
+    }
+
+    function bindEventListeners() {
+      const boxes = document.querySelectorAll('.box');
+      boxes.forEach(function (box) {
+        const button = box.querySelector('button');
+        const textClass = box.querySelector('p').className;
+
+        button.addEventListener('click', function () {
+          copyToClipboard(texts[textClass]);
+        });
+      });
+    }
+
+    function copyToClipboard(text) {
+      const selection = window.getSelection();
+      const range = document.createRange();
+
+      const textNode = document.createTextNode(text);
+      const div = document.createElement("div");
+      div.appendChild(textNode);
+      document.body.appendChild(div);
+
+      range.selectNodeContents(div);
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      document.execCommand('copy');
+      selection.removeAllRanges();
+      document.body.removeChild(div);
+    }
+
+    var input = document.querySelector('#clear');
+    var textarea = document.querySelector('#output');
+
+    input.addEventListener('click', function () {
+      textarea.value = '';
+    }, false);
+
+    // Call onLoadPage when the page loads
+    window.onload = onLoadPage;
+
+
+  </script>
+
+</body>
+
+</html>
